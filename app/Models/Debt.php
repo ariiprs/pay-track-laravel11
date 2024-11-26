@@ -14,26 +14,13 @@ class Debt extends Model
 
     protected $fillable = [
         'customer_id',
-        'debitur_id',
         'category_id',
-        'slug',
         'debt_amount',
         'monthly_payment',
         'borrow_date',
         'deadline_payment_date',
         'debt_status',
     ];
-
-    public function setNameAttribute($value)
-    {
-        $this->attributes['name'] = $value;
-        $this->attributes['slug'] = Str::slug($value);
-    }
-
-    public function debitur(): BelongsTo
-    {
-        return $this->belongsTo(Debitur::class);
-    }
 
     public function customer(): BelongsTo
     {
