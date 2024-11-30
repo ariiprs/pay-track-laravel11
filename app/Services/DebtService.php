@@ -83,15 +83,11 @@ class DebtService
             DB::transaction(function () use ($validated, &$debtId, $orderData)
             {
                 $validated['customer_id'] = $orderData['customer_id'];
-                $validated['customer_name'] = $orderData['customer_name'];
-                $validated['debitur_id'] = $orderData['debitur_id'];
                 $validated['category_id'] = $orderData['category_id'];
                 $validated['debt_amount'] = $orderData['debt_amount'];
                 $validated['monthly_payment'] = $orderData['monthly_payment'];
                 $validated['borrow_date'] = $orderData['borrow_date'];
                 $validated['deadline_payment_date'] = $orderData['deadline_payment_date'];
-                $validated['work'] = $orderData['work'];
-                $validated['address'] = $orderData['address'];
                 $validated['debt_status'] = false;
 
                 $newDebt = $this->debtRepository->createTransaction($validated);
