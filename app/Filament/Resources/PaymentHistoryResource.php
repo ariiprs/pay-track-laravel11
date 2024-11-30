@@ -37,7 +37,7 @@ class PaymentHistoryResource extends Resource
                         ->live()
                         ->afterStateUpdated(function ($state, callable $get, callable $set) {
                             $debt = Debt::find($state);
-                            //mengambil data dari table db debt
+                            
                             $debtAmount = $debt ? $debt->debt_amount : 0;
                             $monthlyPayment = $debt ? $debt->monthly_payment : 0;
 
@@ -51,6 +51,14 @@ class PaymentHistoryResource extends Resource
                             $set('total_installment', $totalInstallment);
                             $set('remaining_amount', $remainingAmount);
                         })
+
+
+
+
+
+
+
+
                         // ->afterStateHydrated(function (callable $get, callable $set, $state) {
                         //     $debt = Debt::find($state);
                         //     $monthlyPayment = $debt ? $debt->monthly_payment : 0;

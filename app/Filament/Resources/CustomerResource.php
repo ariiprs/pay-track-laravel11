@@ -16,10 +16,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Forms\Components\FileUpload;
 use Filament\Tables\Filters\SelectFilter;
-use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\CustomerResource\Pages;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Resources\CustomerResource\RelationManagers;
 use Filament\Forms\Components\Repeater;
 
 class CustomerResource extends Resource
@@ -55,15 +52,10 @@ class CustomerResource extends Resource
                 ]),
 
                 Fieldset::make('Foto Customer')
+                ->relationship('photos')
                 ->schema([
-
-                    Repeater::make('photos')
-                    ->relationship('photos')
-                    ->schema([
-                        FileUpload::make('photo')
-                        ->required(),
-                    ]),
-
+                    FileUpload::make('photo')
+                    ->required(),
                 ]),
 
 
@@ -80,8 +72,10 @@ class CustomerResource extends Resource
 
                 TextColumn::make('debitur.name'),
 
-                TextColumn::make('work')
+                TextColumn::make('work'),
 
+                ImageColumn::make('photos.photo')
+                ->square(),
 
             ])
             ->filters([
@@ -93,9 +87,10 @@ class CustomerResource extends Resource
             ])
             ->actions([
                 //ini merupakan action yang akan digunakan untuk mengedit data,view data, dan bisa custom juga
-                Tables\Actions\EditAction::make(),
                 Tables\Actions\ViewAction::make(),
+                Tables\Actions\EditAction::make(),
             ])
+
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),

@@ -91,8 +91,8 @@ class DebtResource extends Resource
 
                 IconColumn::make('debt_status')
                 ->boolean()
-                ->trueColor('Lunas')
-                ->falseColor('Belum lunas')
+                ->trueColor('success')
+                ->falseColor('danger')
                 ->trueIcon('heroicon-o-check-circle')
                 ->falseIcon('heroicon-o-x-circle')
                 ->label('Status Hutang'),
