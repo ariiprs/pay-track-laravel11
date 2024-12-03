@@ -35,6 +35,13 @@ class DebtService
         $this->debtRepository->saveToSession($orderData);
     }
 
+    public function getDebtDetails()
+    {
+        $orderData = $this->debtRepository->getOrderDataFromSession();
+
+        return $orderData;
+    }
+
    /*  public function getDebtDetails()
     {
         $orderData = $this->debtRepository->getOrderDataFromSession();
@@ -72,42 +79,39 @@ class DebtService
 
 
     /* pada function ini akan mengecek berdasarkan nama customer */
-    public function debtDataConfirm(array $validated)
+    public function debtDataConfirm()
     {
+        // Mengambil data dari sesi
         $orderData = $this->debtRepository->getOrderDataFromSession();
 
         $debtId = null;
 
-
         try {
-            DB::transaction(function () use ($validated, &$debtId, $orderData)
-            {
-                $validated['customer_id'] = $orderData['customer_id'];
-                $validated['category_id'] = $orderData['category_id'];
-                $validated['debt_amount'] = $orderData['debt_amount'];
-                $validated['monthly_payment'] = $orderData['monthly_payment'];
-                $validated['borrow_date'] = $orderData['borrow_date'];
-                $validated['deadline_payment_date'] = $orderData['deadline_payment_date'];
-                $validated['debt_status'] = false;
+            DB::transaction(function () use (&$debtId, $orderData) {
+                // Langsung gunakan $orderData sebagai data yang akan disimpan
+                $debtData = [
+                    'customer_id' => $orderData['customer_id'],
+                    'category_id' => $orderData['category_id'],
+                    'debt_amount' => $orderData['debt_amount'],
+                    'monthly_payment' => $orderData['monthly_payment'],
+                    'borrow_date' => $orderData['borrow_date'],
+                    'deadline_payment_date' => $orderData['deadline_payment_date'],
+                    'debt_status' => false, // Status default
+                ];
 
-                $newDebt = $this->debtRepository->createTransaction($validated);
+                // Simpan ke database menggunakan repository
+                $newDebt = $this->debtRepository->createTransaction($debtData);
 
+                // Ambil ID dari data yang baru disimpan
                 $debtId = $newDebt->id;
-
             });
-
-            /*  DB::transaction(function () use ($validated, &$productTransactionId, $orderData) {
-                if(isset($validated['proof'])){
-                    $proofPath = $validated['proof']->store('proofs', 'public');
-                    //yang disimpan hanya nama file nya saja, kalo fotonya di simpan di database
-                    $validated['proof'] = $proofPath;
-                } */
-        }catch (\Exception $e) {
-            Log::error( 'Error in payment confirmation: ' . $e->getMessage());
+        } catch (\Exception $e) {
+            Log::error('Error in debt confirmation: ' . $e->getMessage());
             session()->flash('error', $e->getMessage());
             return null;
         }
 
         return $debtId;
     }
+
 }
